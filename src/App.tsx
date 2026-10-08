@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import AgencyStudioBar from './components/AgencyStudioBar'
 import Navbar from './components/Navbar'
 import StorySection from './sections/StorySection'
 import RatesSection from './sections/RatesSection'
@@ -9,6 +10,10 @@ import Footer from './components/Footer'
 import BookPage from './pages/BookPage'
 import DiscoverPage from './pages/DiscoverPage'
 import FAQPage from './pages/FAQPage'
+import WellnessPage from './pages/WellnessPage'
+import AutosPage from './pages/AutosPage'
+import DentalPage from './pages/DentalPage'
+import AgencyHubPage from './pages/AgencyHubPage'
 
 const videoUrl =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_091828_e240eb17-6edc-4129-ad9d-98678e3fd238.mp4'
@@ -21,7 +26,7 @@ function ScrollToTop() {
   return null
 }
 
-function HomePage() {
+function SkyEliteHomePage() {
   const navigate = useNavigate()
 
   return (
@@ -99,7 +104,7 @@ function HomePage() {
               const el = document.getElementById('story')
               el?.scrollIntoView({ behavior: 'smooth' })
             }}
-            className="text-xs uppercase tracking-widest text-gray-500/80 hover:text-gray-800 transition-colors flex items-center gap-1.5"
+            className="text-xs uppercase tracking-widest text-gray-500/80 hover:text-gray-800 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             Scroll to explore
             <span className="inline-block animate-bounce">&darr;</span>
@@ -127,15 +132,35 @@ function HomePage() {
 
 export default function App() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-[#070a10]">
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/book" element={<BookPage />} />
-        <Route path="/discover" element={<DiscoverPage />} />
-        <Route path="/faq" element={<FAQPage />} />
-        <Route path="*" element={<HomePage />} />
-      </Routes>
-    </>
+      {/* Global Agency Studio Switcher Bar */}
+      <AgencyStudioBar />
+
+      <div className="flex-1">
+        <Routes>
+          {/* Brand 1: SkyElite Private Jet Aviation */}
+          <Route path="/" element={<SkyEliteHomePage />} />
+          <Route path="/book" element={<BookPage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+
+          {/* Brand 2: SOMA Longevity & Biohacking Wellness Sanctuary */}
+          <Route path="/wellness" element={<WellnessPage />} />
+
+          {/* Brand 3: Vandenberg Automobili 1,450 HP Hypercar Atelier */}
+          <Route path="/autos" element={<AutosPage />} />
+
+          {/* Brand 4: Elysian Dental Atelier & Smile Architecture */}
+          <Route path="/dental" element={<DentalPage />} />
+
+          {/* Agency Portfolio Showcase & Client Inquiries */}
+          <Route path="/agency" element={<AgencyHubPage />} />
+
+          {/* Fallback */}
+          <Route path="*" element={<SkyEliteHomePage />} />
+        </Routes>
+      </div>
+    </div>
   )
 }
