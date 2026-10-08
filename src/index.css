@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: #0b0f17;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b0f17;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Futuristic Interactive Card System (Subtle Aero Lift & Ambient Cyan Glow on Touch/Hover) */
+.aero-card {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease,
+              background-color 0.35s ease;
+}
+
+.aero-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 0 16px 36px -10px rgba(14, 165, 233, 0.16),
+              0 0 24px 0 rgba(56, 189, 248, 0.08) !important;
+}
+
+.aero-card:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* Futuristic Interactive Button System */
+.aero-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease,
+              background-color 0.3s ease;
+}
+
+.aero-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 28px -6px rgba(34, 211, 238, 0.28);
+}
+
+.aero-btn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+/* Subtle Shimmer Sheen effect across buttons on touch/hover */
+.aero-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.aero-sheen::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.aero-sheen:hover::after,
+.aero-sheen:active::after {
+  left: 200%;
+  transition: left 0.75s ease-in-out;
+}
