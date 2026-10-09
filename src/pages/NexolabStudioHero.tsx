@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowUpRight, X, Send, CheckCircle } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { ArrowUpRight, X, Send, CheckCircle, Menu } from 'lucide-react'
 
 const VIDEO_URL =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260517_222138_3e3205be-3364-417b-a64a-bfe087acbec4.mp4'
@@ -15,7 +14,7 @@ const fadeDown = {
     opacity: 1,
     y: 0,
     transition: {
-      delay: index * 0.1,
+      delay: index * 0.08,
       duration: 0.5,
       ease: [0.22, 1, 0.36, 1],
     },
@@ -23,7 +22,7 @@ const fadeDown = {
 }
 
 const fadeUp = {
-  initial: { opacity: 0, y: 32 },
+  initial: { opacity: 0, y: 30 },
   animate: (index: number) => ({
     opacity: 1,
     y: 0,
@@ -40,7 +39,7 @@ const slideUp = {
   animate: (wordIndex: number) => ({
     y: 0,
     transition: {
-      delay: 0.4 + wordIndex * 0.14,
+      delay: 0.35 + wordIndex * 0.12,
       duration: 0.7,
       ease: [0.22, 1, 0.36, 1],
     },
@@ -48,51 +47,53 @@ const slideUp = {
 }
 
 const NAV_LINKS = [
-  { name: 'Story', href: '#story' },
-  { name: 'Expertise', href: '#expertise' },
-  { name: 'Studios', href: '#studios' },
-  { name: 'Feedback', href: '#feedback' },
+  { name: 'Work', href: '#work' },
+  { name: 'Services', href: '#services' },
+  { name: 'Process', href: '#process' },
+  { name: 'About', href: '#about' },
 ]
 
 const STATS = [
-  { number: '300', label: 'CRAFTED\nBRANDS' },
-  { number: '200', label: 'DIGITAL\nPRODUCTS' },
-  { number: '100', label: 'VENTURES\nFUNDED' },
+  { number: '10', suffix: '+', label: 'DIGITAL\nPRODUCTS' },
+  { number: '100', suffix: '%', label: 'PRODUCTION\nREADY' },
+  { number: '04', suffix: '+', label: 'CORE\nDISCIPLINES' },
 ]
 
-const HEADING_WORDS = ['Fearless', 'Vision', 'Delivered']
+interface NexolabStudioHeroProps {
+  onOpenProjectModal?: () => void
+}
 
-export default function NexolabStudioHero() {
-  const navigate = useNavigate()
+export default function NexolabStudioHero({ onOpenProjectModal }: NexolabStudioHeroProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [contactModalOpen, setContactModalOpen] = useState(false)
+  const [internalModalOpen, setInternalModalOpen] = useState(false)
   const [contactSent, setContactSent] = useState(false)
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
-    brand: 'Wellness Brand',
-    budget: '$25,000+',
+    projectType: 'AI Product Development',
+    budget: '$25,000 - $50,000',
     brief: '',
   })
+
+  const openModal = () => {
+    if (onOpenProjectModal) {
+      onOpenProjectModal()
+    } else {
+      setInternalModalOpen(true)
+    }
+  }
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setContactSent(true)
     setTimeout(() => {
       setContactSent(false)
-      setContactModalOpen(false)
+      setInternalModalOpen(false)
     }, 2400)
   }
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false)
-    if (href === '#studios') {
-      const el = document.getElementById('studios-section')
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-        return
-      }
-    }
     const target = document.querySelector(href)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })
@@ -114,13 +115,13 @@ export default function NexolabStudioHero() {
           playsInline
           className="w-full h-full object-cover"
         />
-        {/* Subtle high-key transparent grade to maintain pristine black typography contrast */}
-        <div className="absolute inset-0 bg-white/15 backdrop-contrast-[1.05]" />
+        {/* Subtle grade overlay to preserve high-contrast crisp black text readability */}
+        <div className="absolute inset-0 bg-white/20 backdrop-contrast-[1.04]" />
       </div>
 
-      {/* ---------------- 1. NAVIGATION BAR ---------------- */}
-      <header className="relative z-20 w-full flex items-center justify-between px-5 sm:px-8 md:px-12 pt-5 md:pt-6">
-        {/* Left: Circular Logo (32px round div, 2px border #5E0ED7, 10px solid circle #5E0ED7) */}
+      {/* ---------------- 1. TOP NAVIGATION ---------------- */}
+      <header className="relative z-20 w-full flex items-center justify-between px-5 sm:px-8 md:px-12 pt-6 md:pt-8">
+        {/* Left: Brand Identity with Circular Logo Dot */}
         <motion.div
           custom={0}
           initial="initial"
@@ -138,275 +139,290 @@ export default function NexolabStudioHero() {
               className="w-2.5 h-2.5 rounded-full"
             />
           </div>
-          <span className="hidden sm:inline text-xs font-semibold tracking-widest text-black">
-            NEXOLAB STUDIO
+          <span className="text-base sm:text-lg font-bold tracking-widest text-black">
+            NEXOLAB
           </span>
         </motion.div>
 
-        {/* Center: 4 Nav links (hidden on mobile, visible md+) */}
-        <nav className="hidden md:flex items-center gap-8 lg:gap-12">
+        {/* Center: Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-8 lg:gap-10">
           {NAV_LINKS.map((link, idx) => (
-            <motion.a
+            <motion.button
               key={link.name}
-              href={link.href}
               custom={idx + 1}
               initial="initial"
               animate="animate"
               variants={fadeDown}
-              onClick={(e) => {
-                e.preventDefault()
-                handleNavClick(link.href)
-              }}
-              className="text-[14px] font-semibold tracking-widest text-black hover:text-[#5E0ED7] transition-colors cursor-pointer"
+              onClick={() => handleNavClick(link.href)}
+              className="text-xs font-semibold tracking-widest text-black hover:opacity-60 transition-opacity uppercase cursor-pointer"
             >
               {link.name}
-            </motion.a>
+            </motion.button>
           ))}
         </nav>
 
-        {/* Right: Hamburger Button (36px round black button with 3 white spans) */}
-        <motion.button
-          custom={5}
-          initial="initial"
-          animate="animate"
-          variants={fadeDown}
-          type="button"
-          aria-label="Open mobile navigation menu"
-          onClick={() => setMobileMenuOpen(true)}
-          className="w-9 h-9 rounded-full bg-black flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-neutral-800 transition-colors shadow-md"
-        >
-          <span className="w-4 h-0.5 bg-white rounded-full" />
-          <span className="w-4 h-0.5 bg-white rounded-full" />
-          <span className="w-4 h-0.5 bg-white rounded-full" />
-        </motion.button>
+        {/* Right: Action CTA & Mobile Trigger */}
+        <div className="flex items-center gap-3">
+          <motion.button
+            custom={5}
+            initial="initial"
+            animate="animate"
+            variants={fadeDown}
+            onClick={openModal}
+            style={{ backgroundColor: ACCENT_COLOR }}
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-xs font-semibold tracking-widest hover:opacity-90 transition-all hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 cursor-pointer uppercase"
+          >
+            Start a Project
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </motion.button>
+
+          {/* Mobile Menu Hamburger */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-full border border-black/20 text-black hover:bg-black/5 cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </header>
 
-      {/* ---------------- MOBILE MENU OVERLAY ---------------- */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-white flex flex-col justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6"
+            exit={{ opacity: 0, y: -15 }}
+            className="md:hidden relative z-30 mx-4 mt-3 p-5 rounded-2xl bg-white/95 backdrop-blur-xl border border-black/10 shadow-2xl flex flex-col gap-4"
           >
-            {/* Top Row: Same logo + 36px round black close button */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  style={{ borderColor: ACCENT_COLOR }}
-                  className="w-8 h-8 rounded-full border-2 flex items-center justify-center"
-                >
-                  <div
-                    style={{ backgroundColor: ACCENT_COLOR }}
-                    className="w-2.5 h-2.5 rounded-full"
-                  />
-                </div>
-                <span className="text-xs font-semibold tracking-widest text-black">
-                  NEXOLAB STUDIO
-                </span>
-              </div>
-
+            {NAV_LINKS.map((link) => (
               <button
+                key={link.name}
                 type="button"
-                aria-label="Close mobile navigation menu"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white hover:bg-neutral-800 cursor-pointer shadow-md"
+                onClick={() => handleNavClick(link.href)}
+                className="text-left text-sm font-semibold tracking-widest text-black py-2 border-b border-black/5 hover:text-[#5E0ED7] transition-colors uppercase"
               >
-                <X className="w-5 h-5" />
+                {link.name}
               </button>
-            </div>
-
-            {/* Vertical List of Nav Links */}
-            <div className="flex flex-col gap-8 mt-16">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleNavClick(link.href)
-                  }}
-                  className="text-3xl font-semibold tracking-widest text-black hover:text-[#5E0ED7] transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-
-            {/* Bottom CTA (mt-auto) */}
-            <div className="mt-auto pt-8">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  setContactModalOpen(true)
-                }}
-                style={{ color: ACCENT_COLOR }}
-                className="flex items-center gap-2 text-xl font-semibold tracking-wide hover:opacity-85 transition-opacity"
-              >
-                <span>Work With Us</span>
-                <ArrowUpRight className="w-6 h-6" />
-              </button>
-            </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false)
+                openModal()
+              }}
+              style={{ backgroundColor: ACCENT_COLOR }}
+              className="w-full py-3 rounded-full text-white text-xs font-semibold tracking-widest flex items-center justify-center gap-2 uppercase mt-2"
+            >
+              Start a Project
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ---------------- 2. STATS ROW (MIDDLE SECTION) ---------------- */}
-      <section className="relative z-10 flex-1 flex items-center justify-end px-5 sm:px-8 md:px-12 py-8 md:py-0">
-        <div className="flex items-center gap-5 sm:gap-8 md:gap-10">
+      {/* ---------------- 2. HERO CENTER CONTENT ---------------- */}
+      <div className="relative z-10 w-full flex-1 flex flex-col justify-center px-5 sm:px-8 md:px-12 py-12 md:py-16 max-w-7xl mx-auto">
+        <div className="max-w-4xl">
+          {/* Eyebrow Category Tag */}
+          <motion.div
+            custom={0}
+            initial="initial"
+            animate="animate"
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 mb-4 sm:mb-6"
+          >
+            <span
+              style={{ backgroundColor: ACCENT_COLOR }}
+              className="w-2 h-2 rounded-full inline-block"
+            />
+            <span className="text-[11px] sm:text-xs font-semibold tracking-widest text-black/80">
+              AI • PRODUCT • ENGINEERING • DESIGN
+            </span>
+          </motion.div>
+
+          {/* Large Hero Headline */}
+          <div className="overflow-hidden mb-2">
+            <motion.h1
+              custom={0}
+              initial="initial"
+              animate="animate"
+              variants={slideUp}
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-black leading-[0.95] sm:leading-[0.95]"
+            >
+              WE BUILD DIGITAL
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden mb-2">
+            <motion.h1
+              custom={1}
+              initial="initial"
+              animate="animate"
+              variants={slideUp}
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-black leading-[0.95] sm:leading-[0.95]"
+            >
+              PRODUCTS THAT MOVE
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden mb-6 sm:mb-8">
+            <motion.h1
+              custom={2}
+              initial="initial"
+              animate="animate"
+              variants={slideUp}
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-black leading-[0.95] sm:leading-[0.95]"
+            >
+              BUSINESSES FORWARD.
+            </motion.h1>
+          </div>
+
+          {/* Subtitle / Paragraph */}
+          <motion.p
+            custom={2}
+            initial="initial"
+            animate="animate"
+            variants={fadeUp}
+            className="text-xs sm:text-sm md:text-base font-semibold tracking-wider text-black/90 max-w-2xl leading-relaxed mb-8 sm:mb-10"
+          >
+            Nexolab designs, develops, and launches AI-powered products, SaaS platforms, web applications, and digital experiences for ambitious businesses and organizations.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            custom={3}
+            initial="initial"
+            animate="animate"
+            variants={fadeUp}
+            className="flex flex-wrap items-center gap-4 sm:gap-6"
+          >
+            <button
+              type="button"
+              onClick={openModal}
+              style={{ backgroundColor: ACCENT_COLOR }}
+              className="px-7 py-3.5 rounded-full text-white text-xs font-semibold tracking-widest flex items-center gap-2 hover:opacity-90 transition-all hover:shadow-xl hover:shadow-purple-600/30 active:scale-95 cursor-pointer uppercase"
+            >
+              Start a Project
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('work')
+                el?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="px-7 py-3.5 rounded-full border border-black/30 bg-white/70 backdrop-blur-md text-black text-xs font-semibold tracking-widest flex items-center gap-2 hover:bg-black hover:text-white transition-all active:scale-95 cursor-pointer uppercase"
+            >
+              Explore Our Work
+              <span className="text-base leading-none">&darr;</span>
+            </button>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ---------------- 3. BOTTOM STATS & SCROLL SECTION ---------------- */}
+      <footer className="relative z-10 w-full px-5 sm:px-8 md:px-12 pb-8 sm:pb-10 pt-4 flex flex-col md:flex-row md:items-end justify-between gap-6 border-t border-black/10">
+        {/* Left: Three Stats */}
+        <div className="flex items-center gap-8 sm:gap-14 md:gap-16">
           {STATS.map((stat, idx) => (
             <motion.div
               key={stat.label}
-              custom={idx + 2}
+              custom={idx}
               initial="initial"
               animate="animate"
               variants={fadeUp}
-              className="text-right flex flex-col items-end"
+              className="flex items-baseline gap-2.5 sm:gap-3"
             >
-              {/* Number with Accent "+" */}
-              <div
-                style={{ fontSize: 'clamp(1.5rem, 5vw, 3.5rem)' }}
-                className="font-semibold leading-none tracking-tight text-black flex items-start justify-end"
-              >
-                <span
-                  style={{ color: ACCENT_COLOR, fontSize: '0.5em', marginTop: '0.12em', marginRight: '0.08em' }}
-                  className="font-semibold"
-                >
-                  +
+              <div className="flex items-baseline">
+                <span className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tighter text-black">
+                  {stat.number}
                 </span>
-                <span>{stat.number}</span>
+                <span
+                  style={{ color: ACCENT_COLOR }}
+                  className="text-2xl sm:text-3xl font-bold ml-0.5"
+                >
+                  {stat.suffix}
+                </span>
               </div>
-
-              {/* Label */}
-              <p className="text-[10px] sm:text-xs md:text-sm font-semibold tracking-widest text-black whitespace-pre-line leading-tight mt-1.5 sm:mt-2">
+              <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-black/75 whitespace-pre-line leading-tight">
                 {stat.label}
-              </p>
+              </span>
             </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* ---------------- 3. BOTTOM SECTION ---------------- */}
-      <footer className="relative z-10 px-5 sm:px-8 md:px-12 pb-8 md:pb-12 flex flex-col gap-6 md:gap-12">
-        {/* Row A: Tagline + CTA */}
-        <div className="flex items-center justify-between gap-4">
-          {/* Left: Tagline */}
-          <motion.p
-            custom={5}
-            initial="initial"
-            animate="animate"
-            variants={fadeUp}
-            className="text-[10px] sm:text-xs md:text-sm font-semibold tracking-widest text-black max-w-[130px] sm:max-w-[160px] md:max-w-xs leading-snug"
-          >
-            Shaping Bold <br />
-            Visions Into Power <br />
-            For Your Tribe
-          </motion.p>
-
-          {/* Right: CTA link "Work With Us" */}
-          <motion.button
-            custom={6}
-            initial="initial"
-            animate="animate"
-            variants={fadeUp}
-            type="button"
-            onClick={() => setContactModalOpen(true)}
-            style={{ color: ACCENT_COLOR }}
-            className="flex items-center gap-1.5 sm:gap-2 text-base sm:text-xl md:text-2xl font-semibold whitespace-nowrap tracking-wide hover:opacity-85 transition-opacity cursor-pointer"
-          >
-            <span>Work With Us</span>
-            <ArrowUpRight className="w-[18px] sm:w-[22px] h-[18px] sm:h-[22px]" />
-          </motion.button>
-        </div>
-
-        {/* Row B: Description + Main Heading */}
-        <div className="flex items-end justify-between gap-3 sm:gap-4">
-          {/* Left: Fixed-width description */}
-          <motion.div
-            custom={7}
-            initial="initial"
-            animate="animate"
-            variants={fadeUp}
-            className="w-[120px] sm:w-[180px] md:w-[280px] shrink-0 pb-1 sm:pb-2"
-          >
-            <p className="text-[9px] sm:text-xs md:text-sm font-semibold tracking-widest uppercase text-black text-left md:text-right leading-relaxed">
-              Creative Studios Built Around Elevating Your Vision Into Striking Reality
-            </p>
-          </motion.div>
-
-          {/* Right: Main Heading (Fearless / Vision / Delivered) */}
-          <div className="flex flex-col items-end">
-            {HEADING_WORDS.map((word, wordIndex) => (
-              <div key={word} className="overflow-hidden">
-                <motion.h1
-                  custom={wordIndex}
-                  initial="initial"
-                  animate="animate"
-                  variants={slideUp}
-                  style={{
-                    fontSize: 'clamp(2rem, 9vw, 9rem)',
-                    lineHeight: 0.88,
-                  }}
-                  className="font-semibold uppercase text-black text-right tracking-tight"
-                >
-                  {word}
-                </motion.h1>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Right: Scroll to Explore */}
+        <motion.button
+          custom={3}
+          initial="initial"
+          animate="animate"
+          variants={fadeUp}
+          type="button"
+          onClick={() => {
+            const el = document.getElementById('mission')
+            el?.scrollIntoView({ behavior: 'smooth' })
+          }}
+          className="self-start md:self-end flex items-center gap-2 text-xs font-semibold tracking-widest text-black/70 hover:text-black transition-colors uppercase cursor-pointer"
+        >
+          <span>Scroll to explore</span>
+          <span className="inline-block animate-bounce">&darr;</span>
+        </motion.button>
       </footer>
 
-      {/* ---------------- WORK WITH US / CLIENT MODAL ---------------- */}
-      {contactModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-6 sm:p-8 shadow-2xl text-black">
-            <button
-              type="button"
-              onClick={() => setContactModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-black rounded-lg transition-colors"
+      {/* ---------------- PROJECT INQUIRY MODAL ---------------- */}
+      <AnimatePresence>
+        {internalModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              className="relative w-full max-w-xl bg-white rounded-3xl p-6 sm:p-8 border border-black/10 shadow-2xl text-black"
             >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                type="button"
+                onClick={() => setInternalModalOpen(false)}
+                className="absolute top-5 right-5 p-2 rounded-full border border-black/10 hover:bg-black/5 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
 
-            {contactSent ? (
-              <div className="py-12 flex flex-col items-center text-center space-y-4">
-                <div
-                  style={{ backgroundColor: `${ACCENT_COLOR}15`, borderColor: ACCENT_COLOR }}
-                  className="w-16 h-16 rounded-full border flex items-center justify-center"
-                >
-                  <CheckCircle style={{ color: ACCENT_COLOR }} className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-semibold tracking-wider uppercase text-black">
-                  Project Brief Received
-                </h3>
-                <p className="text-xs text-neutral-600 max-w-sm normal-case font-normal">
-                  Thank you for reaching out to Nexolab Studio. Our creative director will review your vision and connect within 24 hours.
-                </p>
-              </div>
-            ) : (
-              <>
-                <div className="mb-6">
+              {contactSent ? (
+                <div className="py-12 flex flex-col items-center text-center">
                   <div
-                    style={{ borderColor: ACCENT_COLOR, color: ACCENT_COLOR }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border mb-2 uppercase tracking-widest"
+                    style={{ backgroundColor: `${ACCENT_COLOR}15`, color: ACCENT_COLOR }}
+                    className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
                   >
-                    <span>NEXOLAB STUDIO INQUIRY</span>
+                    <CheckCircle className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight uppercase text-black">
-                    Work With Nexolab
+                  <h3 className="text-2xl font-semibold tracking-tight uppercase">
+                    Inquiry Received
                   </h3>
-                  <p className="text-xs text-neutral-500 normal-case font-normal mt-1">
-                    Tell us about your brand vision, target timeline, and goals.
+                  <p className="text-xs font-semibold tracking-wider text-black/70 mt-2 max-w-sm uppercase">
+                    Our engineering and product team will review your brief and schedule an architectural roadmap session within 24 hours.
                   </p>
                 </div>
-
+              ) : (
                 <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <div className="mb-2">
+                    <span
+                      style={{ color: ACCENT_COLOR }}
+                      className="text-[11px] font-semibold tracking-widest uppercase block mb-1"
+                    >
+                      LET&apos;S BUILD
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight uppercase">
+                      Start a Project
+                    </h3>
+                    <p className="text-xs font-semibold tracking-wider text-black/60 uppercase mt-1">
+                      Tell us what you&apos;re working on. We&apos;ll help turn the idea into a clear, practical digital product.
+                    </p>
+                  </div>
+
                   <div>
-                    <label className="block text-xs font-semibold tracking-widest uppercase text-black mb-1">
+                    <label className="block text-[11px] font-semibold tracking-widest uppercase text-black/70 mb-1">
                       Your Name
                     </label>
                     <input
@@ -414,78 +430,89 @@ export default function NexolabStudioHero() {
                       required
                       value={contactForm.name}
                       onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      placeholder="e.g. Julian Montgomery"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-black text-xs font-normal normal-case focus:outline-none focus:border-[#5E0ED7]"
+                      placeholder="ALEX RIVERS"
+                      className="w-full px-4 py-2.5 rounded-xl border border-black/15 bg-neutral-50 text-xs font-semibold uppercase tracking-wider focus:outline-none focus:border-[#5E0ED7]"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold tracking-widest uppercase text-black/70 mb-1">
+                      Work Email
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                      placeholder="ALEX@COMPANY.COM"
+                      className="w-full px-4 py-2.5 rounded-xl border border-black/15 bg-neutral-50 text-xs font-semibold uppercase tracking-wider focus:outline-none focus:border-[#5E0ED7]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold tracking-widest uppercase text-black mb-1">
-                        Corporate Email
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                        placeholder="julian@group.com"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-black text-xs font-normal normal-case focus:outline-none focus:border-[#5E0ED7]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold tracking-widest uppercase text-black mb-1">
-                        Project Sector
+                      <label className="block text-[11px] font-semibold tracking-widest uppercase text-black/70 mb-1">
+                        Discipline / Scope
                       </label>
                       <select
-                        value={contactForm.brand}
-                        onChange={(e) => setContactForm({ ...contactForm, brand: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-black text-xs font-normal focus:outline-none focus:border-[#5E0ED7]"
+                        value={contactForm.projectType}
+                        onChange={(e) => setContactForm({ ...contactForm, projectType: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl border border-black/15 bg-neutral-50 text-xs font-semibold uppercase tracking-wider focus:outline-none focus:border-[#5E0ED7]"
                       >
-                        <option value="Wellness Brand">Wellness Sanctuary</option>
-                        <option value="Autos Brand">Automotive & Hypercars</option>
-                        <option value="Dental Brand">Cosmetic Dental Clinic</option>
-                        <option value="Aviation Brand">Private Aviation</option>
-                        <option value="Bespoke Studio">Bespoke Venture</option>
+                        <option value="AI Product Development">AI Product Development</option>
+                        <option value="SaaS & Web Applications">SaaS & Web Applications</option>
+                        <option value="MVP Development">MVP Development</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                        <option value="Business Automation">Business Automation</option>
+                        <option value="Custom Digital Platform">Custom Digital Platform</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold tracking-widest uppercase text-black/70 mb-1">
+                        Budget Range
+                      </label>
+                      <select
+                        value={contactForm.budget}
+                        onChange={(e) => setContactForm({ ...contactForm, budget: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl border border-black/15 bg-neutral-50 text-xs font-semibold uppercase tracking-wider focus:outline-none focus:border-[#5E0ED7]"
+                      >
+                        <option value="$10,000 - $25,000">$10,000 - $25,000</option>
+                        <option value="$25,000 - $50,000">$25,000 - $50,000</option>
+                        <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                        <option value="$100,000+">$100,000+</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold tracking-widest uppercase text-black mb-1">
-                      Project Goals & Vision
+                    <label className="block text-[11px] font-semibold tracking-widest uppercase text-black/70 mb-1">
+                      Project Goals &amp; Overview
                     </label>
                     <textarea
                       rows={3}
+                      required
                       value={contactForm.brief}
                       onChange={(e) => setContactForm({ ...contactForm, brief: e.target.value })}
-                      placeholder="Share your goals, timeline, and requirements..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-black text-xs font-normal normal-case focus:outline-none focus:border-[#5E0ED7] resize-none"
+                      placeholder="DESCRIBE YOUR PRODUCT CONCEPT, CORE USERS, AND LAUNCH TIMELINE..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-black/15 bg-neutral-50 text-xs font-semibold uppercase tracking-wider focus:outline-none focus:border-[#5E0ED7] resize-none"
                     />
                   </div>
 
-                  <div className="pt-2 flex items-center justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setContactModalOpen(false)}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold tracking-wider uppercase text-neutral-500 hover:text-black"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      style={{ backgroundColor: ACCENT_COLOR }}
-                      className="px-6 py-2.5 rounded-xl text-white font-semibold text-xs tracking-widest uppercase hover:opacity-90 shadow-md cursor-pointer"
-                    >
-                      Submit Brief
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    style={{ backgroundColor: ACCENT_COLOR }}
+                    className="w-full py-3.5 rounded-full text-white text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-2 hover:opacity-90 transition-all hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 cursor-pointer mt-2"
+                  >
+                    Submit Project Brief
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
                 </form>
-              </>
-            )}
+              )}
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }
